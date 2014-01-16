@@ -67,6 +67,9 @@ void *video_hw_init(void)
  */
 int board_init(void)
 {
+	gd->bd->bi_arch_number = MACH_TYPE_S5L8930;			/* Machine type for S5L8930. */
+	gd->bd->bi_boot_params = LINUX_BOOT_PARAM_ADDR;	/* Load address. */
+	
 	return 0;
 }
 

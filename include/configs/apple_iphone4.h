@@ -48,6 +48,8 @@
 
 #define CONFIG_ENV_IS_NOWHERE
 
+#define CONFIG_SYS_CACHELINE_SIZE       32
+
 #define CONFIG_SYS_NO_FLASH				1
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV 	1
 
@@ -61,7 +63,6 @@
 #undef CONFIG_CMD_NFS			/* NFS support */
 #undef CONFIG_CMD_SAVEENV		/* saveenv */
 #undef CONFIG_CMD_SETGETDCR		/* DCR support on 4xx */
-
 
 /*
  * Size of malloc() pool
@@ -80,6 +81,11 @@
 
 #define CONFIG_CMD_CLEAR	1	/* ANSI terminal clear screen command */
 
+#define CONFIG_CMD_CACHE
+#define CONFIG_CMD_SETEXPR	/* Evaluate expressions		*/
+
+#undef CONFIG_SYS_ICACHE_OFF
+#undef CONFIG_SYS_DCACHE_OFF
 
 /*
  * Miscellaneous configurable options
@@ -144,6 +150,8 @@ int a4_kp_getc(void);
 
 #define CONFIG_NR_DRAM_BANKS		1
 #define CONFIG_SYS_SDRAM_BASE		0x40000000
+
+#define LINUX_BOOT_PARAM_ADDR		(CONFIG_SYS_SDRAM_BASE + 0x100)
 
 #endif /* __CONFIG_H */
 

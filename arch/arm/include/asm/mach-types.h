@@ -1106,6 +1106,7 @@ extern unsigned int __machine_arch_type;
 #define MACH_TYPE_OMAP5_SEVM           3777
 #define MACH_TYPE_ARMADILLO_800EVA     3863
 #define MACH_TYPE_KZM9G                4140
+#define MACH_TYPE_S5L8930              6666
 
 #ifdef CONFIG_ARCH_EBSA110
 # ifdef machine_arch_type
@@ -1117,6 +1118,18 @@ extern unsigned int __machine_arch_type;
 # define machine_is_ebsa110()	(machine_arch_type == MACH_TYPE_EBSA110)
 #else
 # define machine_is_ebsa110()	(0)
+#endif
+
+#ifdef CONFIG_S5L8930
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type	__machine_arch_type
+# else
+#  define machine_arch_type	MACH_TYPE_S5L8930
+# endif
+# define machine_is_s5l8930()	(machine_arch_type == MACH_TYPE_S5L8930)
+#else
+# define machine_is_s5l8930()	(0)
 #endif
 
 #ifdef CONFIG_ARCH_RPC
