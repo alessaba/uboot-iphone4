@@ -28,3 +28,11 @@ int dram_init(void)
 	gd->ram_size = 256 * 1024 * 1024;
 	return 0;
 }
+
+#ifndef CONFIG_SYS_DCACHE_OFF
+void enable_caches(void)
+{
+	/* Enable D-cache. I-cache is already enabled in start.S */
+	dcache_enable();
+}
+#endif
