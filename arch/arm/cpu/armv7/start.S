@@ -108,6 +108,27 @@ IRQ_STACK_START_IN:
  */
 
 reset:
+#ifdef CONFIG_S5L
+    /* Check sure we're at the right load address */
+    ldr    r0, =_start
+    adr    r1, _start
+    cmp    r0, r1
+    beq    L_relocated
+
+    mov    r2, #(1 * 512 * 1024)	// HACK
+L_relocate_loop:
+    ldr    r3, [r1], #4
+    str    r3, [r0], #4
+    subs   r2, r2, #4
+    bgt    L_relocate_loop
+
+    /* We're done relocating, jump back into the image. */
+    ldr    r0, =_start
+    bx     r0
+
+L_relocated:
+#endif
+
 	bl	save_boot_params
 	/*
 	 * disable interrupts (FIQ and IRQ), also set the cpu to SVC32 mode,

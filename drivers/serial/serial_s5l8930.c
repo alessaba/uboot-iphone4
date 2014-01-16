@@ -3,26 +3,17 @@
  * Gary Jennejohn, DENX Software Engineering, <garyj@denx.de>
  *
  * SPDX-License-Identifier:	GPL-2.0+
+ *
+ * Based on the S3C241X driver.
  */
 
 #include <common.h>
 #include <linux/compiler.h>
-#include <asm/arch/s3c24x0_cpu.h>
+#include <asm/arch/cpu.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#ifdef CONFIG_SERIAL1
-#define UART_NR	S3C24X0_UART0
-
-#elif defined(CONFIG_SERIAL2)
-#define UART_NR	S3C24X0_UART1
-
-#elif defined(CONFIG_SERIAL3)
-#define UART_NR	S3C24X0_UART2
-
-#else
-#error "Bad: you didn't configure serial ..."
-#endif
+#define UART_NR	S5L8930_UART
 
 #include <asm/io.h>
 #include <serial.h>
@@ -76,7 +67,7 @@ void _serial_setbrg(const int dev_index)
 	int i;
 
 	/* value is calculated so : (int)(PCLK/16./baudrate) -1 */
-	reg = get_PCLK() / (16 * gd->baudrate) - 1;
+	reg = 24000000 / (16 * gd->baudrate) - 1;
 
 	writel(reg, &uart->ubrdiv);
 	for (i = 0; i < 100; i++)
@@ -93,6 +84,7 @@ static inline void serial_setbrg_dev(unsigned int dev_index)
  */
 static int serial_init_dev(const int dev_index)
 {
+#if 0
 	struct s3c24x0_uart *uart = s3c24x0_get_base_uart(dev_index);
 
 #ifdef CONFIG_HWFLOW
@@ -122,6 +114,7 @@ static int serial_init_dev(const int dev_index)
 		writel(0x10, &uart->umcon);
 #endif
 	_serial_setbrg(dev_index);
+#endif
 	return (0);
 }
 
@@ -238,29 +231,13 @@ static inline void serial_puts_dev(int dev_index, const char *s)
 DECLARE_S3C_SERIAL_FUNCTIONS(0);
 struct serial_device s3c24xx_serial0_device =
 INIT_S3C_SERIAL_STRUCTURE(0, "s3ser0");
-DECLARE_S3C_SERIAL_FUNCTIONS(1);
-struct serial_device s3c24xx_serial1_device =
-INIT_S3C_SERIAL_STRUCTURE(1, "s3ser1");
-DECLARE_S3C_SERIAL_FUNCTIONS(2);
-struct serial_device s3c24xx_serial2_device =
-INIT_S3C_SERIAL_STRUCTURE(2, "s3ser2");
 
 __weak struct serial_device *default_serial_console(void)
 {
-#if defined(CONFIG_SERIAL1)
 	return &s3c24xx_serial0_device;
-#elif defined(CONFIG_SERIAL2)
-	return &s3c24xx_serial1_device;
-#elif defined(CONFIG_SERIAL3)
-	return &s3c24xx_serial2_device;
-#else
-#error "CONFIG_SERIAL? missing."
-#endif
 }
 
 void s3c24xx_serial_initialize(void)
 {
 	serial_register(&s3c24xx_serial0_device);
-	serial_register(&s3c24xx_serial1_device);
-	serial_register(&s3c24xx_serial2_device);
 }
